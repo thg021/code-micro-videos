@@ -12,5 +12,10 @@
 */
 
 Route::get('/', function () {
+
+    //dump die - ele mata a aplicação
+    //dd(Request::getMethod());
+    dump(Request::getMethod());
     return view('welcome');
 });
+
