@@ -16,7 +16,7 @@ class CategoryController extends Controller
     
     public function index(Request $request)
     {
-        dump($request);
+        //dump($request);
         if($request->has('only_trashed'))
         {
             return Category::onlyTrashed()->get();
