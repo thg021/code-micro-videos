@@ -22,6 +22,7 @@ class CategoryController extends Controller
             return Category::onlyTrashed()->get();
         }
         //Get 
+        
         return Category::all();
     }
 
@@ -53,6 +54,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //delete
+        
         $category->delete();
         return response()->noContent();//204
     }
