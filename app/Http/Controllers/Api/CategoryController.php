@@ -32,8 +32,9 @@ class CategoryController extends Controller
         //Post
         //Regras usando o validate que esta incluso no Controller
         $this->validate($request, $this->rules);
-
-        return Category::create($request->all());
+        $category = Category::create($request->all());
+        $category->refresh();
+        return $category;
     }
 
     public function show(Category $category)
