@@ -6,49 +6,49 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Models\Category;
+use App\Models\Genre;
 use Tests\TestCase;
 
-class CategoryControllerTest extends TestCase
+class GenreControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
     public function testIndex()
     {
-        $category = factory(Category::class)->create();
-        $response = $this->get(route('categories.index'));
+        $genre = factory(Genre::class)->create();
+        $response = $this->get(route('genres.index'));
 
         $response
             ->assertStatus(200)
-            ->assertJson([$category->toArray()]);
+            ->assertJson([$genre->toArray()]);
 
     }
 
     public function testShow()
     {
-        $category = factory(Category::class)->create();
+        $genre = factory(Genre::class)->create();
         $response = $this->get(route(
-            'categories.show', 
-        ['category' => $category->id]
+            'genres.show', 
+        ['genre' => $genre->id]
         ));
 
         $response
             ->assertStatus(200)
-            ->assertJson($category->toArray());
+            ->assertJson($genre->toArray());
     }
 
     public function testInvalidationData()
     {
         $response = $this->json(
             'POST', 
-            route('categories.store'), 
+            route('genres.store'), 
             []);
 
         $this->assertInvalidationRequired($response);
         
         $response = $this->json(
             'POST', 
-            route('categories.store'), 
+            route('genres.store'), 
             [
                 'name' => str_repeat('a', 256), 
                 'is_active'=> 'a'
@@ -57,18 +57,18 @@ class CategoryControllerTest extends TestCase
         $this->assertInvalidationMax($response);
         $this->assertInvalidationBoolean($response);
 
-        $category = factory(Category::class)->create();
+        $genre = factory(Genre::class)->create();
         $response = $this->json('PUT', route(
-            'categories.update', 
-            ['category' => $category->id]), 
+            'genres.update', 
+            ['genre' => $genre->id]), 
             []
         );
 
         $this->assertInvalidationRequired($response);
              
         $response = $this->json('PUT', route(
-            'categories.update', 
-            ['category' => $category->id]), 
+            'genres.update', 
+            ['genre' => $genre->id]), 
             [
                 'name' => str_repeat('a', 256), 
                 'is_active' => 'a'
@@ -113,101 +113,83 @@ class CategoryControllerTest extends TestCase
     {
         $response = $this->json(
             'POST', 
-            route('categories.store'), 
+            route('genres.store'), 
             [
                 'name' => 'test'
             ]);
         $id = $response->json('id');
-        $category = Category::find($id);
+        $genre = Genre::find($id);
         $response
             ->assertStatus(201)
-            ->assertJson($category->toArray());
+            ->assertJson($genre->toArray());
         $this->assertTrue($response->json('is_active'));
-        $this->assertNull($response->json('description'));
 
         $response = $this->json(
             'POST', 
-            route('categories.store'), 
+            route('genres.store'), 
             [
                 'name' => 'test', 
-                'description' => 'description test', 
                 'is_active' => false
             ]);
       
         $response
             ->assertJsonFragment([
-                'is_active' => false, 
-                'description' => 'description test'
+                'is_active' => false
             ]);
     }
 
     public function testUpdate()
     {
-        $category = factory(Category::class)->create([
-            'description' => 'description test', 
+        $genre = factory(Genre::class)->create([
+            'name' => 'genre test', 
             'is_active' => false
         ]);
         $response = $this->json(
             'PUT', 
-            route('categories.update', [ 'category' => $category->id]), 
+            route('genres.update', [ 'genre' => $genre->id]), 
             [
                 'name' => 'test',
-                'description' => 'test', 
                 'is_active' => true
             ]);
         $id = $response->json('id');
-        $category = Category::find($id);
+        $genre = Genre::find($id);
         $response
             ->assertStatus(200)
-            ->assertJson($category->toArray())
+            ->assertJson($genre->toArray())
             ->assertJsonFragment([
-                'description' => 'test', 
+                'name' => 'test', 
                 'is_active' => true
             ]);
 
-        $response = $this->json(
-            'PUT', 
-            route('categories.update', [ 'category' => $category->id]), 
-            [
-                'name' => 'test',
-                'description' => '', 
-                'is_active' => true
-            ]);
-
-        $response
-            ->assertJsonFragment([
-                'description' => null
-            ]);
+  
     }
 
     public function testDestroy()
     {
-        $category = factory(Category::class)->create();
-        $id = $category->id; 
+        $genre = factory(Genre::class)->create();
+        $id = $genre->id; 
 
         $response = $this->json(
             'DELETE', 
             route(
-                'categories.destroy', 
-                ['category' => $id]
+                'genres.destroy', 
+                ['genre' => $id]
             ));
         
         $response 
             ->assertStatus(204);
-        $this->assertNull(Category::find($id));
-        $this->assertNotNull(Category::withTrashed()->find($id));
+        $this->assertNull(Genre::find($id));
+        $this->assertNotNull(Genre::withTrashed()->find($id));
 
         $response = $this->json(
             'DELETE', 
             route(
-                'categories.destroy', 
-                ['category' => 'test']
+                'genres.destroy', 
+                ['genre' => 'test']
             ));
 
         $response
             ->assertStatus(404  );
-
-        
-
     }
+
 }
