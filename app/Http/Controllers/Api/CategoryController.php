@@ -2,61 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BasicCrudController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class CategoryController extends BasicCrudController
 {
 
     private $rules = [
         'name' => 'required|max:255', 
+        'description' => 'nullable',
         'is_active' => 'boolean'
     ];
     
-    public function index(Request $request)
+    protected function model()
     {
-        //dump($request);
-        if($request->has('only_trashed'))
-        {
-            return Category::onlyTrashed()->get();
-        }
-        //Get 
-        
-        return Category::all();
+        return Category::class;
     }
 
-
-    public function store(Request $request)
+    protected function rulesStore()
     {
-        //Post
-        //Regras usando o validate que esta incluso no Controller
-        $this->validate($request, $this->rules);
-        $category = Category::create($request->all());
-        $category->refresh();
-        return $category;
+        return $this->rules;
     }
 
-    public function show(Category $category)
+    protected function rulesUpdate()
     {
-        //Pesquisa por params
-        //dump($category->getAttribute('id'));
-        return $category;
-    }
-
-    public function update(Request $request, Category $category)
-    {
-        //Put e Patch
-        $this->validate($request, $this->rules);
-        $category->update($request->all());
-        return $category;
-    }
-
-    public function destroy(Category $category)
-    {
-        //delete
-        
-        $category->delete();
-        return response()->noContent();//204
+        return $this->rules;
     }
 }
