@@ -4,8 +4,6 @@ namespace Tests\Feature\Http\Controllers\Api;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestResponse;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Genre;
 use Tests\TestCase;
 use Tests\Traits\TestValidations;
@@ -193,6 +191,20 @@ class GenreControllerTest extends TestCase
 
         $response
             ->assertStatus(404  );
+    }
+
+    protected function routeStore()
+    {
+        return route('genres.store');
+    }
+
+    protected function routeUpdate()
+    {
+        return route('genres.update', ['genre' => $this->genre->id] );
+    }
+
+    protected function model(){
+        return Genre::class;
     }
 
 }

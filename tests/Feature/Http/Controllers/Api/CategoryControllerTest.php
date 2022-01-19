@@ -107,19 +107,20 @@ class CategoryControllerTest extends TestCase
             'description' => ''
         ];
 
+        
         $this->assertUpdate(
             $data, 
-        array_merge($data + ['description' => null]));
-
+        array_merge($data , ['description' => null]));
+       
         $data['description'] = 'test';
         $this->assertUpdate(
             $data, 
-        array_merge($data + ['description' => 'test']));
+        array_merge($data , ['description' => 'test']));
 
         $data['description'] = null;
         $this->assertUpdate(
             $data, 
-        array_merge($data + ['description' => null]));
+        array_merge($data , ['description' => null]));
 
     }
 
