@@ -10,20 +10,9 @@ abstract class BasicCrudController extends Controller
     protected abstract function model();
     protected abstract function rulesStore();
     protected abstract function rulesUpdate();
-
-    // private $rules = [
-    //     'name' => 'required|max:255', 
-    //     'is_active' => 'boolean'
-    // ];
     
     public function index()
     {
-      
-        // if($request->has('only_trashed'))
-        // {
-        //     return $this->model()::onlyTrashed()->get();
-        // }
-       
         return $this->model()::all();
     }
 
@@ -44,8 +33,8 @@ abstract class BasicCrudController extends Controller
 
     public function show($id)
     {
-        $category = $this->findOrFail($id);
-        return $category;
+        $obj = $this->findOrFail($id);
+        return $obj;
     }
 
     public function update(Request $request, $id)

@@ -106,10 +106,10 @@ class BasicCrudControllerTest extends TestCase
             'description' => 'test'
         ]);
 
-        $obj = $this->controller->show($category->id);
+        $result = $this->controller->show($category->id);
         $this->assertEquals(
-            $category->toArray(), 
-            $obj->toArray()
+            $result->toArray(), 
+            CategoryStub::find(1)->toArray()
         );
     }
 
@@ -127,11 +127,10 @@ class BasicCrudControllerTest extends TestCase
                 'description' => 'description_updated'
             ]);
         
-        $obj = $this->controller->update($this->requestMock, $category->id);
-        $category->refresh();
+        $result = $this->controller->update($this->requestMock, $category->id);
         $this->assertEquals(
-            $category->toArray(), 
-            $obj->toArray()
+            $result->toArray(), 
+            CategoryStub::find(1)->toArray()
         );
     }
 
