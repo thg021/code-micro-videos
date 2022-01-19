@@ -9,6 +9,7 @@ abstract class BasicCrudController extends Controller
 {
     protected abstract function model();
     protected abstract function rulesStore();
+    protected abstract function rulesUpdate();
 
     // private $rules = [
     //     'name' => 'required|max:255', 
@@ -41,26 +42,26 @@ abstract class BasicCrudController extends Controller
     }
 
 
-    // public function show(Category $category)
-    // {
-    //     //Pesquisa por params
-    //     //dump($category->getAttribute('id'));
-    //     return $category;
-    // }
+    public function show($id)
+    {
+        $category = $this->findOrFail($id);
+        return $category;
+    }
 
-    // public function update(Request $request, Category $category)
-    // {
-    //     //Put e Patch
-    //     $this->validate($request, $this->rules);
-    //     $category->update($request->all());
-    //     return $category;
-    // }
+    public function update(Request $request, $id)
+    {
+       
+        $obj = $this->findOrFail($id);
+        $validatedData = $this->validate($request, $this->rulesUpdate());
+        $obj->update($validatedData);
+        return  $obj;
+    }
 
-    // public function destroy(Category $category)
-    // {
-    //     //delete
-        
-    //     $category->delete();
-    //     return response()->noContent();//204
-    // }
+    public function destroy($id)
+    {
+        //delete
+        $obj = $this->findOrFail($id);
+        $obj->delete();
+        return response()->noContent();//204
+    }
 }
