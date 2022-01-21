@@ -15,7 +15,8 @@ class CategoryControllerTest extends TestCase
 
     private $category;
 
-    protected function setUp(): void{
+    protected function setUp(): void
+    {
         parent::setUp();
         
         $this->category = factory(Category::class)->create();
