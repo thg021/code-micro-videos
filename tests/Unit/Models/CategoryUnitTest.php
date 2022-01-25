@@ -5,7 +5,7 @@ namespace Tests\Unit\Models;
 use App\Models\Category;
 use Tests\TestCase;
 
-class CategoryTest extends TestCase
+class CategoryUnitTest extends TestCase
 {
   
   
