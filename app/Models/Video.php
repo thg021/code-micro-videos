@@ -20,14 +20,15 @@ class Video extends Model
         'rating', 
         'duration'
     ]; 
-    protected $casts = [
-        'year_launched' => 'integer', 
-        'opened' => 'boolean', 
-        'duration' => 'integer'
-    ]; 
     protected $dates = [
         'deleted_at'
     ];
+    protected $casts = [
+        'opened' => 'boolean',
+        'year_launched' => 'integer', 
+        'duration' => 'integer',
+    ]; 
+
     public $incrementing = false;
     protected $keyType = 'string';
 }

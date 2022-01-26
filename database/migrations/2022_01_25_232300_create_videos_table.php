@@ -19,7 +19,7 @@ class CreateVideosTable extends Migration
             $table->text('description');
             $table->smallInteger('year_launched');
             $table->boolean('opened')->default(false);
-            $table->string('ranting', 3);
+            $table->string('rating', 3);
             $table->smallInteger('duration');       
             $table->softDeletes();
             $table->timestamps();
