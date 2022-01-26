@@ -28,6 +28,6 @@ class Video extends Model
     protected $dates = [
         'deleted_at'
     ];
-    public $incremented = false;
+    public $incrementing = false;
     protected $keyType = 'string';
 }
