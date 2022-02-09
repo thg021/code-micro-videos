@@ -34,41 +34,33 @@ class VideoController extends BasicCrudController
    {
       $this->addRuleIfGenreHasCategories($request);
       $validatedData = $this->validate($request, $this->rulesStore());
-      $self = $this; 
-
-      $obj = \DB::transaction(
-         function() use($request, $validatedData, $self) {
-         /** @var Video $obj */
-         $obj = $this->model()::create($validatedData);
-         $self->handleRelations($obj, $request); 
-         return $obj;
-      });
-      
+      /** @var Video $obj */
+      $obj = $this->model()::create($validatedData);
       $obj->refresh();
       return $obj;
+
+      //$self = $this; 
+      // $obj = \DB::transaction(
+      //    function() use($request, $validatedData, $self) {
+      //    /** @var Video $obj */
+      //    $obj = $this->model()::create($validatedData);
+      //    $self->handleRelations($obj, $request); 
+      //    return $obj;
+      // });
+           
    }
 
    public function update(Request $request, $id)
    {     
-       $obj = $this->findOrFail($id);
-       $self = $this; 
-       $this->addRuleIfGenreHasCategories($request);
-       $validatedData = $this->validate($request, $this->rulesUpdate());
-       $obj = \DB::transaction(
-         function() use($request, $validatedData, $self, $obj) {
-         /** @var Video $obj */
-         $obj->update($validatedData);
-         $self->handleRelations($obj, $request); 
-         return $obj;
-      });
-       return  $obj;
+      $obj = $this->findOrFail($id);
+      $self = $this; 
+      $this->addRuleIfGenreHasCategories($request);
+      $validatedData = $this->validate($request, $this->rulesUpdate());
+      /** @var Video $obj */
+      $obj->update($validatedData);
+      return  $obj;
    }
    
-   protected function handleRelations($videos, Request $request)
-   {
-      $videos->categories()->sync($request->get('categories_id'));
-      $videos->genres()->sync($request->get('genres_id'));
-   }
 
    protected function addRuleIfGenreHasCategories(Request $request)
    {
