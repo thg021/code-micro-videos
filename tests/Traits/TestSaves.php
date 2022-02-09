@@ -17,7 +17,7 @@ trait TestSaves
             'POST', 
             $this->routeStore(), 
             $sendData);
-            
+
         if($response->status() !== 201){
             throw new \Exception("Response status must be 201, given {$response->status()}: \n{$response->content()}");
         }
