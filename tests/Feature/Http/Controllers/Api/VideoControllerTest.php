@@ -64,6 +64,8 @@ class VideoControllerTest extends TestCase
                 ->shouldReceive('validate')
                 ->withAnyArgs()
                 ->andReturn($this->sendData);
+
+                
         
         $this->mockVideoController
                 ->shouldReceive('rulesStore')
@@ -74,13 +76,20 @@ class VideoControllerTest extends TestCase
                 ->once()
                 ->andThrow(new TestException());
 
+        $this->mokeRequest
+            ->shouldReceive('get')
+            ->withAnyArgs()
+            ->andReturn([]);
+
+        $hasError = false;
         try {
-            
             $this->mockVideoController->store($this->mokeRequest);
         } catch (TestException $exception) {
             $this->assertCount(1, Video::all());
+            $hasError = true;
         }
         
+        $this->assertTrue($hasError);
 
     }
 
@@ -111,6 +120,12 @@ class VideoControllerTest extends TestCase
                 ->shouldReceive('handleRelations')
                 ->once()
                 ->andThrow(new TestException());
+
+            $this->mokeRequest
+                ->shouldReceive('get')
+                ->withAnyArgs()
+                ->andReturn([]);
+    
 
         $hasError = false;
         try {
@@ -244,6 +259,7 @@ class VideoControllerTest extends TestCase
 
         $category = factory(Category::class)->create();
         $genre = factory(Genre::class)->create();
+        $genre->categories()->sync($category->id);
 
         $data = [
             [

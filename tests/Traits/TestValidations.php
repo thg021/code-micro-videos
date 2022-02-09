@@ -21,7 +21,7 @@ trait TestValidations
             'POST', 
             $this->routeStore(), 
             $data);
-        
+       
         $fields = array_keys($data);
         $this->assertInvalidationFields(
             $response, 
