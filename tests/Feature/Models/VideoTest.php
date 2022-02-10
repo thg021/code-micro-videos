@@ -45,6 +45,7 @@ class VideoTest extends TestCase
                 'duration',
                 'created_at', 
                 'updated_at', 
+                'video_file',
                 'deleted_at'
             ], $videoKey
         );
@@ -317,7 +318,7 @@ class VideoTest extends TestCase
 
     protected function assertHasCategory($videoId, $categoryId)
     {
-        $this->assertDatabaseHas('genre_video', [
+        $this->assertDatabaseHas('category_video', [
             'video_id' => $videoId, 
             'category_id' => $categoryId
         ]);
