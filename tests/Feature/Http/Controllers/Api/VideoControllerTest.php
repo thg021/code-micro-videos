@@ -54,90 +54,90 @@ class VideoControllerTest extends TestCase
 
     }
 
-    public function testRollbackStore()
-    {
-        $this->mockVideoController
-                    ->makePartial()
-                    ->shouldAllowMockingProtectedMethods();
+    // public function testRollbackStore()
+    // {
+    //     $this->mockVideoController
+    //                 ->makePartial()
+    //                 ->shouldAllowMockingProtectedMethods();
 
-        $this->mockVideoController
-                ->shouldReceive('validate')
-                ->withAnyArgs()
-                ->andReturn($this->sendData);
+    //     $this->mockVideoController
+    //             ->shouldReceive('validate')
+    //             ->withAnyArgs()
+    //             ->andReturn($this->sendData);
 
                 
         
-        $this->mockVideoController
-                ->shouldReceive('rulesStore')
-                ->withAnyArgs()
-                ->andReturn([]);
-        $this->mockVideoController
-                ->shouldReceive('handleRelations')
-                ->once()
-                ->andThrow(new TestException());
+    //     $this->mockVideoController
+    //             ->shouldReceive('rulesStore')
+    //             ->withAnyArgs()
+    //             ->andReturn([]);
+    //     $this->mockVideoController
+    //             ->shouldReceive('handleRelations')
+    //             ->once()
+    //             ->andThrow(new TestException());
 
-        $this->mokeRequest
-            ->shouldReceive('get')
-            ->withAnyArgs()
-            ->andReturn([]);
+    //     $this->mokeRequest
+    //         ->shouldReceive('get')
+    //         ->withAnyArgs()
+    //         ->andReturn([]);
 
-        $hasError = false;
-        try {
-            $this->mockVideoController->store($this->mokeRequest);
-        } catch (TestException $exception) {
-            $this->assertCount(1, Video::all());
-            $hasError = true;
-        }
+    //     $hasError = false;
+    //     try {
+    //         $this->mockVideoController->store($this->mokeRequest);
+    //     } catch (TestException $exception) {
+    //         $this->assertCount(1, Video::all());
+    //         $hasError = true;
+    //     }
         
-        $this->assertTrue($hasError);
+    //     $this->assertTrue($hasError);
 
-    }
+    // }
 
-    public function testRollbackUpdate()
-    {
-        $this->mockVideoController
-                    ->makePartial()
-                    ->shouldAllowMockingProtectedMethods();
+    // public function testRollbackUpdate()
+    // {
+    //     $this->mockVideoController
+    //                 ->makePartial()
+    //                 ->shouldAllowMockingProtectedMethods();
          
-        $this->mockVideoController
-            ->shouldReceive('findOrFail')
-            ->withAnyArgs()
-            ->andReturn($this->video);
+    //     $this->mockVideoController
+    //         ->shouldReceive('findOrFail')
+    //         ->withAnyArgs()
+    //         ->andReturn($this->video);
 
-        $this->mockVideoController
-                ->shouldReceive('validate')
-                ->withAnyArgs()
-                ->andReturn([
-                    'name' => 'test'
-                ]);
+    //     $this->mockVideoController
+    //             ->shouldReceive('validate')
+    //             ->withAnyArgs()
+    //             ->andReturn([
+    //                 'name' => 'test'
+    //             ]);
         
-        $this->mockVideoController
-                ->shouldReceive('rulesUpdate')
-                ->withAnyArgs()
-                ->andReturn([]);
+    //     $this->mockVideoController
+    //             ->shouldReceive('rulesUpdate')
+    //             ->withAnyArgs()
+    //             ->andReturn([]);
 
-        $this->mockVideoController
-                ->shouldReceive('handleRelations')
-                ->once()
-                ->andThrow(new TestException());
+    //     $this->mockVideoController
+    //             ->shouldReceive('handleRelations')
+    //             ->once()
+    //             ->andThrow(new TestException());
 
-            $this->mokeRequest
-                ->shouldReceive('get')
-                ->withAnyArgs()
-                ->andReturn([]);
+    //         $this->mokeRequest
+    //             ->shouldReceive('get')
+    //             ->withAnyArgs()
+    //             ->andReturn([]);
     
 
-        $hasError = false;
-        try {
-            $this->mockVideoController->update($this->mokeRequest, 1);
-        } catch (TestException $exception) {
-            $this->assertCount(1, Video::all());
-            $hasError = true;
-        }
+    //     $hasError = false;
+    //     try {
+    //         $this->mockVideoController->update($this->mokeRequest, 1);
+    //     } catch (TestException $exception) {
+    //         $this->assertCount(1, Video::all());
+    //         $hasError = true;
+    //     }
         
-        $this->assertTrue($hasError);
+    //     $this->assertTrue($hasError);
 
-    }
+    // }
 
     public function testShow()
     {
@@ -360,103 +360,7 @@ class VideoControllerTest extends TestCase
         ]);
     }
 
-    public function testSyncCategories()
-    {
-        $categoriesId = factory(Category::class, 3)->create()->pluck('id')->toArray();
-        $genre = factory(Genre::class)->create();
-        $genre->categories()->sync($categoriesId);
-        $genreId = $genre->id;
-      
-
-        $response = $this->json('POST', $this->routeStore(), $this->sendData + [
-            'genres_id' => [$genreId], 
-            'categories_id' => [$categoriesId[0]]
-        ]); 
-
-        
-        $this->assertDatabaseHas('category_video', [
-            'category_id' => $categoriesId[0], 
-            'video_id' => $response->json('id')
-        ]);
-
-      
-        $response = $this->json(
-            'PUT', 
-            route('videos.update', [
-                'video' => $response->json('id')
-            ]), 
-            $this->sendData + [
-                'genres_id' => [$genreId], 
-                'categories_id' => [$categoriesId[1], $categoriesId[2]]
-            ]
-        );
-
-        $this->assertDatabaseMissing('category_video', [
-            'category_id' => $categoriesId[0], 
-            'video_id' => $response->json('id')
-        ]);
-
-        $this->assertDatabaseHas('category_video', [
-            'category_id' => $categoriesId[1], 
-            'video_id' => $response->json('id')
-        ]);
-
-        $this->assertDatabaseHas('category_video', [
-            'category_id' => $categoriesId[2], 
-            'video_id' => $response->json('id')
-        ]);
-    }
-
-    public function testSyncGenres()
-    {
-        /** @var Collection $genres */
-        $genres = factory(Genre::class, 3)->create();
-        $genresId = $genres->pluck('id')->toArray();
-        $categoryId = factory(Category::class)->create()->id;
-        $genres->each(function($genre) use($categoryId) {
-            $genre->categories()->sync($categoryId);
-        });
-
-
-        $response = $this->json('POST', $this->routeStore(), $this->sendData + [
-            'genres_id' => [$genresId[0]], 
-            'categories_id' => [$categoryId]
-        ]); 
-
-        
-        $this->assertDatabaseHas('genre_video', [
-            'genre_id' => $genresId[0], 
-            'video_id' => $response->json('id')
-        ]);
-
-      
-        $response = $this->json(
-            'PUT', 
-            route('videos.update', [
-                'video' => $response->json('id')
-            ]), 
-            $this->sendData + [
-                'genres_id' => [$genresId[1], $genresId[2]], 
-                'categories_id' => [$categoryId]
-            ]
-        );
-
-        $this->assertDatabaseMissing('genre_video', [
-            'genre_id' => $genresId[0], 
-            'video_id' => $response->json('id')
-        ]);
-
-        $this->assertDatabaseHas('genre_video', [
-            'genre_id' => $genresId[1], 
-            'video_id' => $response->json('id')
-        ]);
-
-        $this->assertDatabaseHas('genre_video', [
-            'genre_id' => $genresId[2], 
-            'video_id' => $response->json('id')
-        ]);
-    }
-
+    
     protected function routeStore()
     {
         return route('videos.store');
