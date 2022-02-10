@@ -9,6 +9,7 @@ use Illuminate\Database\Schema\Blueprint;
 class UploadFilesStub extends Model
 {
     use UploadFiles;
+    public static $fileFields = ['file1', 'file2'];
     // protected $table = 'category_stubs';
     // protected $fillable = ['name', 'description'];
 
