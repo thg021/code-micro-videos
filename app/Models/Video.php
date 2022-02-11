@@ -12,6 +12,7 @@ class Video extends Model
     use SoftDeletes, Uuid, UploadFiles;
 
     const RATING_LIST = ['L', '10', '12', '14', '16', '18'];
+    const VIDEO_FILE_MAX_SIZE = 12;
 
     protected $fillable = [
         'title', 
@@ -59,6 +60,7 @@ class Video extends Model
 
     public function update(array $attributes = [], array $options = [])
     {
+        $files = self::extractFiles($attributes);
         try {
             \DB::beginTransaction();
             $saved = parent::update($attributes, $options);
@@ -66,7 +68,7 @@ class Video extends Model
             if($saved){
                 //fazer upload dos novos arquivos
                 //excluir os antigos
-
+                $this->uploadFiles($files);
             }
             \DB::commit();
             return $saved;
