@@ -11,6 +11,7 @@ abstract class BaseVideoTestCase extends TestCase
     use DatabaseMigrations;
 
     protected $data;
+    protected $fileFieldsdata = [];
 
     protected function setUp(): void 
     {
@@ -22,5 +23,9 @@ abstract class BaseVideoTestCase extends TestCase
             "rating"=> Video::RATING_LIST[0], 
             "duration"=> 90, 
         ]; 
+        
+        foreach(Video::$fileFields as $field){
+            $fileFieldsdata[$field] = "$field.test";
+        }
     }
 }

@@ -28,6 +28,7 @@ class VideoCrudTest extends BaseVideoTestCase
                 'created_at', 
                 'updated_at', 
                 'video_file',
+                'thumb_file',
                 'deleted_at'
             ], $videoKey
         );
@@ -90,13 +91,14 @@ class VideoCrudTest extends BaseVideoTestCase
 
     public function testCreateWithBasicFields()
     {
-        $video = Video::create($this->data);
+
+        $video = Video::create($this->data + $this->fileFieldsdata);
         $video->refresh();
 
         $this->assertEquals(36, strlen($video->id));
         $this->assertFalse($video->opened);
         $this->assertDatabaseHas('videos', 
-            $this->data + ['opened' => false]
+            $this->data + $this->fileFieldsdata + ['opened' => false]
         );
 
         $video = Video::create($this->data + ['opened' => true ]);
@@ -128,21 +130,22 @@ class VideoCrudTest extends BaseVideoTestCase
 
     public function testUpdateWithBasicFields()
     {
+        
         $video = factory(Video::class)->create(
             ['opened' => false]
         );
 
-        $video->update($this->data);
+        $video->update($this->data + $this->fileFieldsdata);
         $this->assertFalse($video->opened);
-        $this->assertDatabaseHas('videos', $this->data + ['opened' => false]);
+        $this->assertDatabaseHas('videos', $this->data + $this->fileFieldsdata + ['opened' => false]);
 
         $video = factory(Video::class)->create([
             'opened' => false
         ]);
 
-        $video->update($this->data + [ 'opened' => true]);
+        $video->update($this->data + $this->fileFieldsdata + [ 'opened' => true]);
         $this->asserttrue($video->opened);
-        $this->assertDatabaseHas('videos', $this->data + ['opened' => true]);
+        $this->assertDatabaseHas('videos', $this->data + $this->fileFieldsdata + ['opened' => true]);
     }
 
     public function testUpdateWithRelations()
