@@ -3,23 +3,26 @@
 namespace Tests\Prod\Models\Traits;
 
 use Illuminate\Http\UploadedFile;
+use Tests\Traits\TestProd;
 use Tests\Stubs\Models\UploadFilesStub;
 use Tests\TestCase;
 use Tests\Traits\TestStorages;
 
 class UploadFilesProdTest extends TestCase
 {
-    use TestStorages;
+    use TestStorages, TestProd;
 
     private $obj;
   
     public function setUp(): void 
     {
         parent::setUp();
+        $this->skipIfNotProd();
         $this->obj = new UploadFilesStub();
         //Alteração de Drive para testes no googlecloud
         \Config::set('filesystems.default', 'gcs');
         $this->deleteAllFiles();
+        
     }
    
     public function testUploadFile()
