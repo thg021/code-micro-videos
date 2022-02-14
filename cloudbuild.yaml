@@ -17,8 +17,8 @@ steps:
         env:
             - GOOGLE_CLOUD_PROJECT_ID=$PROJECT_ID
             - GOOGLE_CLOUD_KEY_FILE=service-account-storage.json
-            - GOOGLE_CLOUD_STORAGE_BUCKET=code-app-video-thiago
-            - GOOGLE_CLOUD_STORAGE_API_URI=https://storage.cloud.google.com/code-app-video-thiago
+            - GOOGLE_CLOUD_STORAGE_BUCKET=code-app-video-thiago 
+            - GOOGLE_CLOUD_STORAGE_API_URI=https://storage.cloud.google.com/code-app-video-thiago   
             - TESTING_PROD=true
     -   id: "Chown in /var/www"
         name: 'gcr.io/cloud-builders/docker'
