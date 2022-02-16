@@ -32,15 +32,24 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
     }
 
 
-    public function testInvalidationVideoField()
+    public function testInvalidationFilesField()
     {
-        $this->assertInvalidationFile(
-            'video_file', 
-            'mp4', 
-            12, 
-            'mimetypes', ['values' => 'video/mp4']
-        );
-        
+        $dataFilesField = [
+            ['video_file', 'mp4', Video::VIDEO_FILE_MAX_SIZE, ['values' => 'video/mp4']], 
+            ['thumb_file', 'jpeg', Video::THUMB_FILE_MAX_SIZE, ['values' => 'image/jpeg']], 
+            ['trailer_file', 'mp4', Video::TRAILER_FILE_MAX_SIZE, ['values' => 'video/mp4']], 
+            ['banner_file', 'jpeg', Video::BANNER_FILE_MAX_SIZE, ['values' => 'image/jpeg']], 
+        ];
+
+        foreach($dataFilesField as $fileField){
+            $this->assertInvalidationFile(
+                $fileField[0], 
+                $fileField[1], 
+                $fileField[2], 
+                'mimetypes', $fileField[3]
+            );
+        }
+
     }
 
     public function testStoreWithFiles()
@@ -100,7 +109,10 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
     protected function getFiles()
     {
         return [
-            'video_file' => UploadedFile::fake()->create('video_file.mp4')
+            'video_file' => UploadedFile::fake()->create('video_file.mp4'), 
+            'thumb_file' => UploadedFile::fake()->create('thumb_file.jpeg'),
+            'banner_file' => UploadedFile::fake()->create('banner_file.jpeg'),
+            'trailer_file' => UploadedFile::fake()->create('trailer_file.mp4'),
         ];
     }
     
