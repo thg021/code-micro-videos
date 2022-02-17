@@ -7,8 +7,6 @@ use Tests\TestCase;
 
 class VideoUnitTest extends TestCase
 {
-  
-  
     private $video;
 
     protected function setUp(): void 
@@ -27,7 +25,9 @@ class VideoUnitTest extends TestCase
             'rating', 
             'duration', 
             'video_file',
-            'thumb_file'
+            'thumb_file', 
+            'banner_file', 
+            'trailer_file'
 
         ];
         $this->assertEquals($fillable, $this->video->getFillable());
