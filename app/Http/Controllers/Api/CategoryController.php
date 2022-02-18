@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BasicCrudController;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\Request;
 
 class CategoryController extends BasicCrudController
 {
@@ -14,6 +14,18 @@ class CategoryController extends BasicCrudController
         'description' => 'nullable',
         'is_active' => 'boolean'
     ];
+
+    // public function index()
+    // {
+    //     $collection = parent::index();
+    //     return CategoryResource::collection($collection);
+    // }
+
+    // public function show($id)
+    // {
+    //     $obj = parent::show($id);
+    //     return new CategoryResource($obj);
+    // }
     
     protected function model()
     {
@@ -28,5 +40,10 @@ class CategoryController extends BasicCrudController
     protected function rulesUpdate()
     {
         return $this->rules;
+    }
+
+    protected function resource()
+    {
+        return CategoryResource::class;
     }
 }
