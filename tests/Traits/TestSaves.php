@@ -50,12 +50,13 @@ trait TestSaves
     private function assertInDatabase(TestResponse $response, array $testDatabase)
     {
 
+       
         $model = $this->model();
         $table = (new $model)->getTable();
         $this->assertDatabaseHas($table, $testDatabase + [
             'id' => $this->getIdFromResponse($response)
         ]);
-        
+
         $response->assertJsonFragment($testDatabase + ['id' => $this->getIdFromResponse($response)]);
     }
 
@@ -67,6 +68,7 @@ trait TestSaves
     }
 
     private function getIdFromResponse(TestResponse $response){
+
         return $response->json('id') ?? $response->json('data.id');
     }
 }

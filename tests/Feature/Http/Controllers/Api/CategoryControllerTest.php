@@ -37,11 +37,21 @@ class CategoryControllerTest extends TestCase
     {
         
         $response = $this->get(route('categories.index'));
-
         $response
             ->assertStatus(200)
-            ->assertJson([$this->category->toArray()]);
-
+            ->assertJson([
+                'meta' => ['per_page' => 15]
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => $this->serializedFields
+                ], 
+                'links' => [], 
+                'meta' => [],
+            ]);
+    
+        $resource = CategoryResource::collection(collect([$this->category]));
+        $this->assertResource($response, $resource);
     }
 
     public function testShow()
@@ -117,25 +127,24 @@ class CategoryControllerTest extends TestCase
 
         $response->assertJsonStructure(['data' => $this->serializedFields]);
         
-        $id = $response->json(id = $response->json('data.id');
+        $id = $response->json('data.id');
         $resource = new CategoryResource(Category::find($id));
-        $this->assertR
-        ];
+        $this->assertResource($response,  $resource);
 
         
-        $this->assertUpdate(
-            $data, 
-        array_merge($data , ['description' => null]));
+        // $this->assertUpdate(
+        //     $data, 
+        // array_merge($data , ['description' => null]));
        
-        $data['description'] = 'test';
-        $this->assertUpdate(
-            $data, 
-        array_merge($data , ['description' => 'test']));
+        // $data['description'] = 'test';
+        // $this->assertUpdate(
+        //     $data, 
+        // array_merge($data , ['description' => 'test']));
 
-        $data['description'] = null;
-        $this->assertUpdate(
-            $data, 
-        array_merge($data , ['description' => null]));
+        // $data['description'] = null;
+        // $this->assertUpdate(
+        //     $data, 
+        // array_merge($data , ['description' => null]));
 
     }
 
