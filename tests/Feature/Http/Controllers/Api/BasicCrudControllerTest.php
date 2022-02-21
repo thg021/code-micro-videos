@@ -3,9 +3,11 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BasicCrudController;
+use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;    
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use Tests\Stubs\Controllers\CategoryControllerStub;
 use Tests\Stubs\Models\CategoryStub;
 use Tests\TestCase;
@@ -38,11 +40,15 @@ class BasicCrudControllerTest extends TestCase
             'description' => 'test'
         ]);
        
-        $result = $this->controller->index()->toArray(); 
+        $resource = $this->controller->index(); 
+        $serialized = $resource->response()->getData(true);
         $this->assertEquals(
             [$category->toArray()], 
-            $result
+            $serialized['data']
         );
+
+        $this->assertArrayHasKey('meta', $serialized);
+        $this->assertArrayHasKey('links', $serialized);
     }
 
 
@@ -65,11 +71,11 @@ class BasicCrudControllerTest extends TestCase
                 'name' => 'name_test', 
                 'description' => 'description_test'
             ]);
-        $obj = $this->controller->store($this->requestMock);
-
+        $resource = $this->controller->store($this->requestMock);
+        $serialized = $resource->response()->getData(true);
         $this->assertEquals(
             CategoryStub::find(1)->toArray(), 
-            $obj->toArray()
+            $serialized['data']
         );
     }
 
@@ -84,8 +90,8 @@ class BasicCrudControllerTest extends TestCase
         $reflectionMethod = $reflectionClass->getMethod('findOrFail');
         $reflectionMethod->setAccessible(true);
 
-        $result = $reflectionMethod->invokeArgs($this->controller, [$category->id]);
-        $this->assertInstanceOf(CategoryStub::class, $result);
+        $resource = $reflectionMethod->invokeArgs($this->controller, [$category->id]);
+        $this->assertInstanceOf(CategoryStub::class, $resource);
     }
 
     public function testIfFindOrFailThrowExceptionWhenIdInvalid()
@@ -95,8 +101,8 @@ class BasicCrudControllerTest extends TestCase
         $reflectionMethod = $reflectionClass->getMethod('findOrFail');
         $reflectionMethod->setAccessible(true);
 
-        $result = $reflectionMethod->invokeArgs($this->controller, [0]);
-        $this->assertInstanceOf(CategoryStub::class, $result);
+        $resource = $reflectionMethod->invokeArgs($this->controller, [0]);
+        $this->assertInstanceOf(CategoryStub::class, $resource);
     }
 
     public function testShow()
@@ -106,10 +112,11 @@ class BasicCrudControllerTest extends TestCase
             'description' => 'test'
         ]);
 
-        $result = $this->controller->show($category->id);
+        $resource = $this->controller->show($category->id);
+        $serialized = $resource->response()->getData(true);
         $this->assertEquals(
-            $result->toArray(), 
-            CategoryStub::find(1)->toArray()
+            $category->toArray(), 
+            $serialized['data']
         );
     }
 
@@ -127,10 +134,12 @@ class BasicCrudControllerTest extends TestCase
                 'description' => 'description_updated'
             ]);
         
-        $result = $this->controller->update($this->requestMock, $category->id);
+        $resource = $this->controller->update($this->requestMock, $category->id);
+        $serialized = $resource->response()->getData(true);
+        $category->refresh();
         $this->assertEquals(
-            $result->toArray(), 
-            CategoryStub::find(1)->toArray()
+            $category->toArray(), 
+            $serialized['data']
         );
     }
 
